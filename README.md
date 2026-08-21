@@ -1,0 +1,2 @@
+# fiskevenner
+Kalkulator for fiskevennene
