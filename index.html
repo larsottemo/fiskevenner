@@ -1,959 +1,211 @@
 <!DOCTYPE html>
 <html lang="no">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#173026">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Fiskekalk">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon-192.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <title>Svolværvannet Fiskekalkulator</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FangstScore Hybrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --panel:#15212a; --panel2:#1d2c37; --text:#eff6f7; --muted:#a7b8c0;
-      --accent:#48b977; --accent2:#8ee0ad; --border:#30434f;
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --orange: #f97316;
+      --red: #ef4444;
+      --blue: #38bdf8;
     }
-    *{box-sizing:border-box}
-    html{-webkit-text-size-adjust:100%}
-    body{margin:0;min-height:100vh;background:linear-gradient(180deg,#081016,#111b23);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    button,input{font:inherit}
-    .wrap{max-width:760px;margin:auto;padding:calc(16px + env(safe-area-inset-top)) 14px calc(28px + env(safe-area-inset-bottom))}
-    header{padding:8px 2px 14px}
-    h1{font-size:clamp(27px,7vw,38px);line-height:1.05;margin:0 0 8px}
-    h2{font-size:19px;margin:0 0 14px}
-    h3{font-size:16px;margin:0 0 7px}
-    p{line-height:1.5}
-    .intro,.small{color:var(--muted)}
-    .intro{margin:0}
-    .panel{background:rgba(21,33,42,.97);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px}
-    .notice{border-left:4px solid var(--accent);background:#13231b;padding:12px 13px;border-radius:10px;margin-bottom:14px;color:#dcefe3;font-size:14px}
-    .status{display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
-    .status-text{font-size:13px;color:var(--muted)}
-    .action-btn{border:1px solid var(--accent);background:#173326;color:var(--text);border-radius:12px;padding:9px 12px;font-weight:750;cursor:pointer}
-    .action-btn:disabled{opacity:.55;cursor:default}
-    label{display:block;color:var(--muted);font-size:14px}
-    input{width:100%;margin-top:7px;min-height:50px;border-radius:13px;border:1px solid var(--border);background:#0e171e;color:var(--text);padding:10px 12px;font-size:18px}
-    .auto-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
-    .auto-card{border:1px solid var(--border);background:var(--panel2);border-radius:14px;padding:12px}
-    .auto-name{font-size:12px;color:var(--muted)}
-    .auto-value{font-size:23px;font-weight:850;margin-top:3px}
-    .auto-sub{font-size:11px;color:var(--muted);margin-top:2px}
-    .calc-btn{position:sticky;bottom:10px;z-index:5;width:100%;min-height:54px;border:0;border-radius:15px;background:var(--accent);color:white;font-weight:800;font-size:18px;box-shadow:0 7px 22px rgba(0,0,0,.28);margin:2px 0 16px;cursor:pointer}
-    .calc-btn:disabled{opacity:.55;cursor:default}
-    .hero-score{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;background:var(--panel2);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px}
-    .score-number{width:108px;height:108px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:9px solid var(--accent);font-size:35px;font-weight:900;background:#101a21}
-    .badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#263842;font-size:12px;font-weight:800;margin-bottom:6px}
-    .result-title{font-size:21px;font-weight:800;line-height:1.15}
-    .result-text{font-size:14px;color:var(--muted);margin:6px 0 0}
-    .signal{padding:12px;border:1px solid var(--border);border-radius:13px;background:#101a21;margin-top:9px}
-    .grid2{display:grid;grid-template-columns:1fr;gap:14px}
-    ul{padding-left:20px;margin:8px 0 0}
-    li{margin:7px 0;line-height:1.4}
-    .good{color:#c6eed5}
-    .bad{color:#f2c3c3}
-    .source{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--muted)}
-    .install-btn{display:none;width:100%;border:1px solid var(--accent);background:#173326;color:var(--text);border-radius:13px;padding:11px 14px;margin:0 0 14px;font-weight:700}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px 14px 40px;
+    }
+    .container { max-width: 480px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 28px; }
+    header h1 { font-size: 1.7rem; font-weight: 700; }
+    header p { color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
 
-    .forecast-grid{display:grid;grid-template-columns:1fr;gap:12px}
-    .forecast-card{
-      border:1px solid var(--border);
-      background:var(--panel2);
-      border-radius:16px;
-      padding:14px;
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     }
-    .forecast-head{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-      margin-bottom:10px;
-    }
-    .forecast-day{font-size:20px;font-weight:850}
-    .forecast-date{font-size:12px;color:var(--muted);margin-top:2px}
-    .forecast-score{
-      min-width:58px;height:58px;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      border:5px solid var(--accent);background:#101a21;
-      font-size:21px;font-weight:900;
-    }
-    .forecast-rating{font-weight:800;margin-bottom:4px}
-    .forecast-fishability{font-size:13px;color:var(--muted);margin-bottom:10px}
-    .forecast-metrics{
-      display:grid;grid-template-columns:repeat(2,1fr);gap:8px;
-    }
-    .forecast-metric{
-      background:#101a21;border:1px solid var(--border);
-      border-radius:11px;padding:9px;
-    }
-    .forecast-metric-name{font-size:11px;color:var(--muted)}
-    .forecast-metric-value{font-size:16px;font-weight:800;margin-top:2px}
-    .forecast-note{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.4}
-    .forecast-error{color:#f2c3c3;font-size:13px}
 
-    details{margin-top:10px}
-    summary{cursor:pointer;color:var(--muted);font-size:13px}
-    @media(min-width:650px){.auto-grid{grid-template-columns:repeat(4,1fr)}.grid2{grid-template-columns:1fr 1fr}.forecast-grid{grid-template-columns:1fr 1fr}.calc-btn{position:static}}
-    @media(max-width:430px){.hero-score{grid-template-columns:96px 1fr;gap:12px}.score-number{width:88px;height:88px;font-size:30px;border-width:7px}}
+    .time-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .time-label { font-size: 1.05rem; font-weight: 600; }
+    .score-circle {
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 700;
+      border: 3px solid;
+    }
+    .kategori {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .cat-svært-bra { background: rgba(34,197,94,0.15); color: var(--green); }
+    .cat-bra { background: rgba(234,179,8,0.15); color: var(--yellow); }
+    .cat-middels { background: rgba(249,115,22,0.15); color: var(--orange); }
+    .cat-dårlig { background: rgba(239,68,68,0.15); color: var(--red); }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .meta span { color: var(--text); font-weight: 500; }
+
+    .grunnlag {
+      margin-top: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .grunnlag strong { color: var(--text); }
+
+    .loading, .error {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--muted);
+    }
+    .error { color: var(--red); }
+
+    .refresh {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 13px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(56,189,248,0.15);
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
   </style>
 </head>
-
 <body>
-<div class="wrap">
-  <header>
-    <h1>🎣 Svolværvannet<br>Fiskekalkulator</h1>
-    <p class="intro">Frost-data hentes automatisk for i dag, og MET-værmeldingen brukes til fiskevarsel for i morgen og overimorgen. Du legger bare inn vinden ved fiskestart i dag.</p>
-  </header>
+  <div class="container">
+    <header>
+      <h1>FangstScore</h1>
+      <p>Hybrid – observasjon + prognose</p>
+    </header>
 
-  <button id="installBtn" class="install-btn" type="button">Installer på mobilen</button>
+    <div id="app">
+      <div class="loading">Henter data...</div>
+    </div>
 
-  <div class="notice">
-    Nedbør hentes fra <strong>SN85470 Kongsmarka</strong>. Vind, vindretning, temperatur og lufttrykk hentes fra <strong>SN85450</strong> når seriene finnes der.
+    <footer>
+      Data fra MET Frost + Locationforecast
+    </footer>
   </div>
 
-  <section class="panel">
-    <div class="status">
-      <div>
-        <h2 style="margin-bottom:4px">Automatiske data</h2>
-        <div id="weatherStatus" class="status-text">Henter observasjoner fra Frost …</div>
-      </div>
-      <button id="refreshWeather" class="action-btn" type="button">↻ Oppdater</button>
-    </div>
+  <script>
+    const WORKER_URL = "https://fangst-hybrid.lars-ottemo.workers.dev";
 
-    <div class="auto-grid">
-      <div class="auto-card">
-        <div class="auto-name">Nedbør siste 48 t</div>
-        <div id="rainValue" class="auto-value">–</div>
-        <div id="rainSub" class="auto-sub">SN85470 · Frost</div>
-      </div>
+    async function load() {
+      const app = document.getElementById("app");
+      app.innerHTML = `<div class="loading">Henter data...</div>`;
 
-      <div class="auto-card">
-        <div class="auto-name">Høyeste vind i går</div>
-        <div id="windYesterdayValue" class="auto-value">–</div>
-        <div id="windYesterdaySub" class="auto-sub">SN85450 · m/s</div>
-      </div>
+      try {
+        const res = await fetch(WORKER_URL + "?t=" + Date.now());
+        if (!res.ok) throw new Error("Kunne ikke hente data (" + res.status + ")");
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        render(data);
+      } catch (err) {
+        app.innerHTML = `
+          <div class="card">
+            <div class="error">Noe gikk galt<br><small>${err.message}</small></div>
+            <button class="refresh" onclick="load()">Prøv igjen</button>
+          </div>`;
+      }
+    }
 
-      <div class="auto-card">
-        <div class="auto-name">Temperatur nå</div>
-        <div id="temperatureValue" class="auto-value">–</div>
-        <div class="auto-sub">SN85450 · °C</div>
-      </div>
+    function catClass(k) {
+      if (k === "Svært bra") return "cat-svært-bra";
+      if (k === "Bra") return "cat-bra";
+      if (k === "Middels") return "cat-middels";
+      return "cat-dårlig";
+    }
 
-      <div class="auto-card">
-        <div class="auto-name">Vinddreining siste 2 t</div>
-        <div id="directionValue" class="auto-value">–</div>
-        <div id="directionSub" class="auto-sub">SN85450</div>
-      </div>
+    function scoreColor(k) {
+      if (k === "Svært bra") return "var(--green)";
+      if (k === "Bra") return "var(--yellow)";
+      if (k === "Middels") return "var(--orange)";
+      return "var(--red)";
+    }
 
-      <div class="auto-card">
-        <div class="auto-name">Trykkendring 4 døgn</div>
-        <div id="pressureValue" class="auto-value">–</div>
-        <div id="pressureSub" class="auto-sub">SN85450 · hPa</div>
-      </div>
-
-      <div class="auto-card">
-        <div class="auto-name">Måne</div>
-        <div id="moonValue" class="auto-value">–</div>
-        <div id="moonSub" class="auto-sub">beregnes lokalt</div>
-      </div>
-
-      <div class="auto-card">
-        <div class="auto-name">Sesong</div>
-        <div id="seasonValue" class="auto-value">–</div>
-        <div class="auto-sub">beregnes lokalt</div>
-      </div>
-    </div>
-
-    <div class="source">
-      Kilde: MET Norway Frost API via Cloudflare Worker. Appen forsøker å velge standard/hovedserie og aksepterte kvalitetskoder for observasjonene.
-    </div>
-
-    <details>
-      <summary>Teknisk status</summary>
-      <div id="technicalStatus" class="small" style="margin-top:8px">–</div>
-    </details>
-  </section>
-
-  <section class="panel">
-    <h2>Vind ved fiskestart</h2>
-    <label for="windStart">Legg inn vinden du forventer eller observerer når fisket starter (m/s)</label>
-    <input id="windStart" type="number" min="0" max="40" step="0.1" inputmode="decimal" value="4">
-    <p class="small">Dette er den eneste værverdien du trenger å legge inn selv.</p>
-  </section>
-
-  <button id="calculateBtn" class="calc-btn" type="button" disabled>Beregn fiskedagen</button>
-
-
-  <section class="panel">
-    <div class="status">
-      <div>
-        <h2 style="margin-bottom:4px">Fiskevarsel 19–23</h2>
-        <div id="forecastStatus" class="status-text">Henter værmelding …</div>
-      </div>
-    </div>
-
-    <div class="forecast-grid">
-      <div class="forecast-card" id="tomorrowCard">
-        <div class="forecast-head">
-          <div>
-            <div class="forecast-day">I morgen</div>
-            <div class="forecast-date" id="tomorrowDate">–</div>
+    function card(item) {
+      if (!item) return "";
+      const color = scoreColor(item.kategori);
+      return `
+        <div class="card">
+          <div class="time-header">
+            <div class="time-label">${item.label}</div>
+            <div class="score-circle" style="border-color:${color}; color:${color}">
+              ${item.score}
+            </div>
           </div>
-          <div class="forecast-score" id="tomorrowScore">–</div>
-        </div>
-        <div class="forecast-rating" id="tomorrowRating">Venter på prognose</div>
-        <div class="forecast-fishability" id="tomorrowFishability">–</div>
-        <div class="forecast-metrics">
-          <div class="forecast-metric"><div class="forecast-metric-name">Maks vind 19–23</div><div class="forecast-metric-value" id="tomorrowWind">–</div></div>
-          <div class="forecast-metric"><div class="forecast-metric-name">Nedbør før fisket, 48 t</div><div class="forecast-metric-value" id="tomorrowRain">–</div></div>
-          <div class="forecast-metric"><div class="forecast-metric-name">Høyeste vind dagen før</div><div class="forecast-metric-value" id="tomorrowPrevWind">–</div></div>
-          <div class="forecast-metric"><div class="forecast-metric-name">Trykkendring 4 døgn</div><div class="forecast-metric-value" id="tomorrowPressure">–</div></div>
-          <div class="forecast-metric"><div class="forecast-metric-name">Vinddreining før start</div><div class="forecast-metric-value" id="tomorrowDirection">–</div></div>
-          <div class="forecast-metric"><div class="forecast-metric-name">Temperatur ca. 19</div><div class="forecast-metric-value" id="tomorrowTemp">–</div></div>
-        </div>
-        <div class="forecast-note" id="tomorrowNote">–</div>
-      </div>
-
-      <div class="forecast-card" id="dayAfterCard">
-        <div class="forecast-head">
-          <div>
-            <div class="forecast-day">Overimorgen</div>
-            <div class="forecast-date" id="dayAfterDate">–</div>
+          <div class="kategori ${catClass(item.kategori)}">${item.kategori}</div>
+          <div class="meta">
+            <div>Fiskbarhet: <span>${item.fiskbarhet || "–"}</span></div>
+            <div>Vind i tidsrom: <span>${item.vind_i_tidsrom ?? "–"} m/s</span></div>
           </div>
-          <div class="forecast-score" id="dayAfterScore">–</div>
         </div>
-        <div class="forecast-rating" id="dayAfterRating">Venter på prognose</div>
-        <div class="forecast-fishability" id="dayAfterFishability">–</div>
-        <div class="forecast-metrics">
-          <div class="forecast-metric"><div class="forecast-metric-name">Maks vind 19–23</div><div class="forecast-metric-value" id="dayAfterWind">–</div></div>
-          <div class="forecast-metric"><div class="forecast-metric-name">Nedbør før fisket, 48 t</div><div class="forecast-metric-value" id="dayAfterRain">–</div></div>
-          <div class="forecast-metric"><div class="forecast-metric-name">Høyeste vind dagen før</div><div class="forecast-metric-value" id="dayAfterPrevWind">–</div></div>
-          <div class="forecast-metric"><div class="forecast-metric-name">Trykkendring 4 døgn</div><div class="forecast-metric-value" id="dayAfterPressure">–</div></div>
-          <div class="forecast-metric"><div class="forecast-metric-name">Vinddreining før start</div><div class="forecast-metric-value" id="dayAfterDirection">–</div></div>
-          <div class="forecast-metric"><div class="forecast-metric-name">Temperatur ca. 19</div><div class="forecast-metric-value" id="dayAfterTemp">–</div></div>
+      `;
+    }
+
+    function render(data) {
+      document.getElementById("app").innerHTML = `
+        ${card(data.naa)}
+        ${card(data.om12timer)}
+        ${card(data.iMorgenKveld)}
+        ${card(data.overimorgenKveld)}
+
+        <div class="grunnlag">
+          <strong>Grunnlag (observasjoner)</strong><br>
+          Nedbør 4 dager: ${data.grunnlag?.nedbor_4d ?? "–"} mm<br>
+          Vind snitt 4 dager: ${data.grunnlag?.vind_snitt_4d ?? "–"} m/s<br>
+          Trykk snitt 4 dager: ${data.grunnlag?.trykk_snitt_4d ?? "–"} hPa<br>
+          Siste temperatur: ${data.grunnlag?.temperatur_siste ?? "–"} °C
         </div>
-        <div class="forecast-note" id="dayAfterNote">–</div>
-      </div>
-    </div>
 
-    <div class="source">
-      Framtidsværet kommer fra MET Locationforecast via samme Cloudflare Worker. Prognosen er beregnet for fiskevinduet kl. 19–23.
-    </div>
-  </section>
-
-  <section class="panel">
-    <div class="hero-score">
-      <div class="score-number"><span id="scoreValue">–</span></div>
-      <div>
-        <span class="badge" id="ratingBadge">Venter på data</span>
-        <div class="result-title" id="ratingTitle">Henter værdata</div>
-        <p class="result-text" id="ratingText">Frost-observasjonene hentes automatisk via Cloudflare Worker.</p>
-      </div>
-    </div>
-
-    <div class="signal"><h3>Biologisk potensial</h3><p id="bioText" class="small">–</p></div>
-    <div class="signal"><h3>Fiskbarhet</h3><p id="fishabilityText" class="small">–</p></div>
-    <div class="signal"><h3>Trykkendring</h3><p id="pressureText" class="small">–</p></div>
-    <div class="signal"><h3>Vindretning siste 2 timer</h3><p id="directionText" class="small">–</p></div>
-
-    <div class="grid2" style="margin-top:14px">
-      <div><h3>Dette trekker opp</h3><ul id="positiveList"></ul></div>
-      <div><h3>Dette trekker ned</h3><ul id="negativeList"></ul></div>
-    </div>
-  </section>
-</div>
-
-<script>
-(() => {
-  const FROST_BASE = 'https://svolvaervannet-frost.lars-ottemo.workers.dev';
-  const PRECIP_STATION = 'SN85470';
-  const WEATHER_STATION = 'SN85450';
-  const WEATHER_CACHE_KEY = 'svolvaervannet_frost_weather_v4';
-
-  const SYNODIC_MONTH = 29.53058867;
-  const NEW_MOON_REF = Date.UTC(2000,0,6,18,14,0);
-
-  let weather = null;
-  let forecastData = null;
-  let deferredPrompt = null;
-  const statusEl = document.getElementById('weatherStatus');
-  const forecastStatusEl = document.getElementById('forecastStatus');
-  const technicalStatus = document.getElementById('technicalStatus');
-  const refreshBtn = document.getElementById('refreshWeather');
-  const calcBtn = document.getElementById('calculateBtn');
-  const installBtn = document.getElementById('installBtn');
-  const windStartEl = document.getElementById('windStart');
-
-  function fmt(n,d=1){return Number(n).toFixed(d).replace('.',',')}
-
-  function rainScore(mm){if(mm<2)return 5;if(mm<10)return 15;if(mm<20)return 28;return 35}
-  function windYesterdayScore(v){if(v<3)return 4;if(v<6)return 10;if(v<=10)return 16;if(v<=14)return 20;return 16}
-  function windStartScore(v){if(v<2)return 10;if(v<=5)return 20;if(v<=8)return 15;if(v<=10)return 8;return 2}
-  function temperatureScore(t){if(t<=12)return 10;if(t<=15)return 6;return 2}
-  function pressureScore(delta){const x=Math.abs(delta);if(x<5)return 0;if(x<10)return 4;return 8}
-  function directionScore(change,recentWind){if(!Number.isFinite(change)||recentWind<1.5)return 0;if(change<15)return 0;if(change<30)return 1;if(change<60)return 3;return 4}
-
-  function compass(deg){
-    const labels=['N','NØ','Ø','SØ','S','SV','V','NV'];
-    return labels[Math.round((((deg%360)+360)%360)/45)%8];
-  }
-  function angularDifference(a,b){let d=Math.abs(a-b)%360;return d>180?360-d:d}
-
-  function osloHour(date){
-    const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Oslo',hour:'2-digit',hourCycle:'h23'}).formatToParts(date);
-    return Number(parts.find(p=>p.type==='hour').value);
-  }
-
-  function shiftDateKey(key,days){
-    const d=new Date(key+'T12:00:00Z');
-    d.setUTCDate(d.getUTCDate()+days);
-    return d.toISOString().slice(0,10);
-  }
-
-  function displayDateFromKey(key){
-    const d=new Date(key+'T12:00:00Z');
-    return new Intl.DateTimeFormat('nb-NO',{day:'numeric',month:'long'}).format(d);
-  }
-
-  function ratingFor(total){
-    if(total>=90) return {label:'Svært lovende', text:'Dette ser ut som en toppdag'};
-    if(total>=75) return {label:'Meget god', text:'Mye ligger til rette'};
-    if(total>=60) return {label:'God', text:'Absolutt verdt å fiske'};
-    if(total>=40) return {label:'Middels', text:'Blandet bilde'};
-    return {label:'Svak', text:'Forholdene er ikke spesielt lovende'};
-  }
-
-  function fishabilityLabel(wind){
-    if(wind<=5) return 'Svært god fiskbarhet';
-    if(wind<=8) return 'God fiskbarhet';
-    if(wind<=10) return 'Middels fiskbarhet';
-    return 'Dårlig fiskbarhet';
-  }
-
-  function moonForDate(date){ return moonData(date); }
-  function seasonForDate(date){ return seasonData(date); }
-
-  function moonData(date=new Date()){
-    let days=(date.getTime()-NEW_MOON_REF)/86400000;
-    let age=((days%SYNODIC_MONTH)+SYNODIC_MONTH)%SYNODIC_MONTH;
-    const angle=2*Math.PI*age/SYNODIC_MONTH;
-    const illumination=((1-Math.cos(angle))/2)*100;
-    const idx=Math.round((age/SYNODIC_MONTH)*8)%8;
-    const phases=[['🌑','Nymåne'],['🌒','Voksende sigd'],['🌓','Første kvarter'],['🌔','Voksende måne'],['🌕','Fullmåne'],['🌖','Minkende måne'],['🌗','Siste kvarter'],['🌘','Minkende sigd']];
-    return {icon:phases[idx][0],name:phases[idx][1],illumination,score:illumination<=50?5:2};
-  }
-
-  function seasonData(now=new Date()){
-    const m=now.getMonth()+1,d=now.getDate();
-    if(m===8)return {label:'August',score:10};
-    if(m===7&&d>=15)return {label:'15.–31. juli',score:5};
-    if(m===6||(m===7&&d<15))return {label:'Før 15. juli',score:0};
-    return {label:'Utenfor hovedsesong',score:0};
-  }
-
-  function isoDate(d){return d.toISOString().slice(0,10)}
-  function startOfUtcDaysAgo(days){
-    const d=new Date();
-    d.setUTCDate(d.getUTCDate()-days);
-    d.setUTCHours(0,0,0,0);
-    return d;
-  }
-
-  function osloDateKey(date){
-    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Oslo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date);
-    const get=t=>parts.find(p=>p.type===t).value;
-    return `${get('year')}-${get('month')}-${get('day')}`;
-  }
-
-  function frostUrl(path,params){
-    const url=new URL(FROST_BASE+path);
-    Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
-    return url.toString();
-  }
-
-  async function frostGet(path,params){
-    const response=await fetch(frostUrl(path,params),{
-      method:'GET',
-      headers:{'Accept':'application/json'},
-      cache:'no-store'
-    });
-    if(!response.ok){
-      const txt=await response.text().catch(()=> '');
-      throw new Error('Frost via Worker HTTP '+response.status+(txt?' · '+txt.slice(0,160):''));
-    }
-    return response.json();
-  }
-
-  function parseOffsetMs(offset){
-    if(!offset || offset==='PT0H') return 0;
-    const m=String(offset).match(/^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$/);
-    if(!m) return 0;
-    const days=Number(m[1]||0), hours=Number(m[2]||0), minutes=Number(m[3]||0), seconds=Number(m[4]||0);
-    return (((days*24+hours)*60+minutes)*60+seconds)*1000;
-  }
-
-  async function observations(station,element,start,end){
-    let data;
-    try{
-      data=await frostGet('/observations/v0.jsonld',{
-        sources:station,
-        referencetime:`${start.toISOString()}/${end.toISOString()}`,
-        elements:element,
-        timeoffsets:'default',
-        levels:'default',
-        qualities:'0,1,2,3,4'
-      });
-    }catch(err){
-      throw new Error(station+' / '+element+': '+(err.message||err));
+        <button class="refresh" onclick="load()">Oppdater</button>
+      `;
     }
 
-    const rows=[];
-    for(const item of (data.data||[])){
-      const baseTime=new Date(item.referenceTime);
-      for(const obs of (item.observations||[])){
-        if(String(obs.elementId).toLowerCase()===String(element).toLowerCase()){
-          const value=Number(obs.value);
-          if(Number.isFinite(value)){
-            const t=new Date(baseTime.getTime()+parseOffsetMs(obs.timeOffset));
-            rows.push({
-              time:t,
-              value,
-              obs,
-              timeResolution:obs.timeResolution||'',
-              timeOffset:obs.timeOffset||''
-            });
-          }
-        }
-      }
-    }
-    rows.sort((a,b)=>a.time-b.time);
-    if(!rows.length) throw new Error(station+' / '+element+': ingen observasjoner i perioden');
-    return rows;
-  }
-
-  async function observationsFirstAvailable(station,elements,start,end,label){
-    const errors=[];
-    for(const element of elements){
-      try{
-        const rows=await observations(station,element,start,end);
-        return {element,rows};
-      }catch(err){
-        errors.push(err.message||String(err));
-      }
-    }
-    throw new Error(label+': '+errors.join(' | '));
-  }
-
-  function nearest(rows,target){
-    if(!rows.length)return null;
-    let best=rows[0],diff=Math.abs(rows[0].time-target);
-    for(const row of rows){
-      const d=Math.abs(row.time-target);
-      if(d<diff){best=row;diff=d}
-    }
-    return best;
-  }
-
-  function latest(rows){
-    return rows.length?rows[rows.length-1]:null;
-  }
-
-  function sumLastHours(rows,hours,now=new Date()){
-    const cutoff=now.getTime()-hours*3600000;
-    return rows
-      .filter(r=>r.time.getTime()>cutoff && r.time<=now)
-      .reduce((a,r)=>a+r.value,0);
-  }
-
-  function maxYesterday(rows){
-    const yesterday=new Date(Date.now()-86400000);
-    const key=osloDateKey(yesterday);
-    const vals=rows.filter(r=>osloDateKey(r.time)===key).map(r=>r.value);
-    return vals.length?Math.max(...vals):NaN;
-  }
-
-  async function loadFrostWeather(){
-    const now=new Date();
-    const start=startOfUtcDaysAgo(6);
-
-    technicalStatus.textContent='Henter konkrete værelementer fra Frost …';
-
-    // Vi spør eksplisitt etter de faktiske elementene vi trenger.
-    // For nedbør prøves timesum først, deretter standard døgnsum.
-    const [precipResult,windResult,directionResult,tempResult,pressureResult]=await Promise.all([
-      observationsFirstAvailable(
-        PRECIP_STATION,
-        ['sum(precipitation_amount PT1H)','sum(precipitation_amount P1D)','precipitation_amount'],
-        start,now,'Nedbør '+PRECIP_STATION
-      ),
-      observationsFirstAvailable(
-        WEATHER_STATION,
-        ['wind_speed'],
-        start,now,'Vind '+WEATHER_STATION
-      ),
-      observationsFirstAvailable(
-        WEATHER_STATION,
-        ['wind_from_direction'],
-        start,now,'Vindretning '+WEATHER_STATION
-      ),
-      observationsFirstAvailable(
-        WEATHER_STATION,
-        ['air_temperature'],
-        start,now,'Temperatur '+WEATHER_STATION
-      ),
-      observationsFirstAvailable(
-        WEATHER_STATION,
-        ['air_pressure_at_sea_level','surface_air_pressure'],
-        start,now,'Lufttrykk '+WEATHER_STATION
-      )
-    ]);
-
-    const precipRows=precipResult.rows;
-    const windRows=windResult.rows;
-    const directionRows=directionResult.rows;
-    const tempRows=tempResult.rows;
-    const pressureRows=pressureResult.rows;
-
-    const rain48=sumLastHours(precipRows,48,now);
-    const windYesterday=maxYesterday(windRows);
-    const tempLatest=latest(tempRows);
-    const pressureLatest=latest(pressureRows);
-    const pressure4d=nearest(pressureRows,new Date(now.getTime()-4*86400000));
-    const dirLatest=latest(directionRows);
-    const dir2h=nearest(directionRows,new Date(now.getTime()-2*3600000));
-
-    const recentWindRows=windRows.filter(r=>r.time.getTime()>=now.getTime()-2*3600000);
-    const recentWindMax=recentWindRows.length
-      ? Math.max(...recentWindRows.map(r=>r.value))
-      : (latest(windRows)?.value ?? NaN);
-
-    if(!Number.isFinite(rain48)) throw new Error('Nedbør: kunne ikke beregne siste 48 timer');
-    if(!Number.isFinite(windYesterday)) throw new Error('Vind: fant ingen vindverdier for gårsdagen');
-    if(!tempLatest) throw new Error('Temperatur: ingen nyere observasjon');
-    if(!pressureLatest || !pressure4d) throw new Error('Lufttrykk: mangler observasjon nå eller fire døgn tilbake');
-    if(!dirLatest || !dir2h) throw new Error('Vindretning: mangler observasjon nå eller to timer tilbake');
-
-    const precipResolution=precipRows[0]?.timeResolution||'ukjent';
-    const precipNote=
-      precipResult.element==='sum(precipitation_amount PT1H)'
-        ? 'timesnedbør'
-        : precipResult.element==='sum(precipitation_amount P1D)'
-          ? 'døgnnedbør'
-          : 'nedbør';
-
-    technicalStatus.textContent=
-      'Bruker: '+PRECIP_STATION+' '+precipResult.element+' ('+precipNote+', '+precipResolution+')'+
-      ' · '+WEATHER_STATION+' '+windResult.element+
-      ' · '+directionResult.element+
-      ' · '+tempResult.element+
-      ' · '+pressureResult.element;
-
-    return {
-      rain48,
-      windYesterday,
-      temperature:tempLatest.value,
-      pressureToday:pressureLatest.value,
-      pressure4days:pressure4d.value,
-      pressureDelta:pressureLatest.value-pressure4d.value,
-      dirNow:dirLatest.value,
-      dir2h:dir2h.value,
-      directionChange:angularDifference(dirLatest.value,dir2h.value),
-      recentWindMax,
-      moon:moonData(),
-      season:seasonData(),
-      fetchedAt:Date.now(),
-      source:'Frost',
-      elements:{
-        precipitation:precipResult.element,
-        wind:windResult.element,
-        direction:directionResult.element,
-        temperature:tempResult.element,
-        pressure:pressureResult.element
-      },
-      history:{
-        precipitation:precipRows.map(r=>({t:r.time.getTime(),v:r.value})),
-        wind:windRows.map(r=>({t:r.time.getTime(),v:r.value})),
-        pressure:pressureRows.map(r=>({t:r.time.getTime(),v:r.value}))
-      }
-    };
-  }
-
-
-  async function fetchLocationForecast(){
-    const response=await fetch(FROST_BASE+'/forecast',{headers:{'Accept':'application/json'},cache:'no-store'});
-    if(!response.ok){
-      const txt=await response.text().catch(()=> '');
-      throw new Error('Værmelding via Worker HTTP '+response.status+(txt?' · '+txt.slice(0,160):''));
-    }
-    return response.json();
-  }
-
-  function parseForecast(data){
-    const rows=[];
-    for(const item of (data?.properties?.timeseries||[])){
-      const d=item.data||{};
-      const instant=d.instant?.details||{};
-      rows.push({
-        time:new Date(item.time),
-        temperature:Number(instant.air_temperature),
-        pressure:Number(instant.air_pressure_at_sea_level),
-        wind:Number(instant.wind_speed),
-        direction:Number(instant.wind_from_direction),
-        precipitation:Number(d.next_1_hours?.details?.precipitation_amount ?? 0)
-      });
-    }
-    return rows.filter(r=>Number.isFinite(r.time.getTime()));
-  }
-
-  function forecastRowFor(rows,dateKey,hour){
-    const same=rows.filter(r=>osloDateKey(r.time)===dateKey);
-    if(!same.length) return null;
-    let best=same[0], diff=Math.abs(osloHour(same[0].time)-hour);
-    for(const r of same){
-      const d=Math.abs(osloHour(r.time)-hour);
-      if(d<diff){best=r;diff=d}
-    }
-    return best;
-  }
-
-  function maxForecastWind(rows,dateKey,startHour=0,endHour=23){
-    const vals=rows
-      .filter(r=>osloDateKey(r.time)===dateKey && osloHour(r.time)>=startHour && osloHour(r.time)<=endHour && Number.isFinite(r.wind))
-      .map(r=>r.wind);
-    return vals.length?Math.max(...vals):NaN;
-  }
-
-  function maxObservedWindForDate(history,dateKey){
-    const vals=(history||[])
-      .filter(r=>osloDateKey(new Date(r.t))===dateKey && Number.isFinite(r.v))
-      .map(r=>r.v);
-    return vals.length?Math.max(...vals):NaN;
-  }
-
-  function combinedPreviousDayMaxWind(rows,history,targetDateKey){
-    const prevKey=shiftDateKey(targetDateKey,-1);
-    const obs=maxObservedWindForDate(history,prevKey);
-    const fc=maxForecastWind(rows,prevKey,0,23);
-    const candidates=[obs,fc].filter(Number.isFinite);
-    return candidates.length?Math.max(...candidates):NaN;
-  }
-
-  function combinedRain48(rows,history,targetTime){
-    const startMs=targetTime.getTime()-48*3600000;
-    const nowMs=Date.now();
-
-    let total=0;
-    for(const r of (history||[])){
-      if(r.t>startMs && r.t<=Math.min(nowMs,targetTime.getTime()) && Number.isFinite(r.v)) total+=r.v;
-    }
-    for(const r of rows){
-      const t=r.time.getTime();
-      if(t>=Math.max(nowMs,startMs) && t<targetTime.getTime() && Number.isFinite(r.precipitation)) total+=r.precipitation;
-    }
-    return total;
-  }
-
-  function nearestHistoryValue(history,targetMs){
-    if(!history?.length) return null;
-    let best=history[0],diff=Math.abs(history[0].t-targetMs);
-    for(const r of history){
-      const d=Math.abs(r.t-targetMs);
-      if(d<diff){best=r;diff=d}
-    }
-    return best;
-  }
-
-  function buildForecastDay(rows,targetDateKey){
-    const at19=forecastRowFor(rows,targetDateKey,19);
-    const at17=forecastRowFor(rows,targetDateKey,17);
-    if(!at19 || !at17) throw new Error('Mangler timesprognose rundt kl. 17–19 for '+targetDateKey);
-
-    const maxWindWindow=maxForecastWind(rows,targetDateKey,19,23);
-    const prevDayWind=combinedPreviousDayMaxWind(rows,weather.history?.wind,targetDateKey);
-    const rain48=combinedRain48(rows,weather.history?.precipitation,at19.time);
-
-    const pressurePast=nearestHistoryValue(weather.history?.pressure,at19.time.getTime()-4*86400000);
-    if(!pressurePast || !Number.isFinite(at19.pressure)) throw new Error('Mangler trykkdata for '+targetDateKey);
-    const pressureDelta=at19.pressure-pressurePast.v;
-
-    const directionChange=angularDifference(at19.direction,at17.direction);
-    const recentWind=Math.max(at17.wind||0,at19.wind||0);
-
-    if(![maxWindWindow,prevDayWind,rain48,at19.temperature,pressureDelta,directionChange].every(Number.isFinite)){
-      throw new Error('Mangler prognoseverdier for '+targetDateKey);
-    }
-
-    const moon=moonForDate(at19.time);
-    const season=seasonForDate(at19.time);
-    const biological=
-      rainScore(rain48)+
-      windYesterdayScore(prevDayWind)+
-      temperatureScore(at19.temperature)+
-      pressureScore(pressureDelta)+
-      directionScore(directionChange,recentWind);
-    const fishability=windStartScore(maxWindWindow);
-    const context=season.score+moon.score;
-    const comboBonus=(rain48>=10 && prevDayWind>=8)?5:0;
-    const total=Math.min(100,biological+fishability+context+comboBonus);
-
-    return {
-      dateKey:targetDateKey,
-      total,
-      rating:ratingFor(total),
-      maxWindWindow,
-      prevDayWind,
-      rain48,
-      temperature:at19.temperature,
-      pressureDelta,
-      directionChange,
-      dir17:at17.direction,
-      dir19:at19.direction,
-      fishability:fishabilityLabel(maxWindWindow)
-    };
-  }
-
-  function renderForecastCard(prefix,d){
-    document.getElementById(prefix+'Date').textContent=displayDateFromKey(d.dateKey)+' · kl. 19–23';
-    document.getElementById(prefix+'Score').textContent=d.total;
-    document.getElementById(prefix+'Rating').textContent=d.rating.label+' · '+d.rating.text;
-    document.getElementById(prefix+'Fishability').textContent=d.fishability+' · maks '+fmt(d.maxWindWindow)+' m/s';
-    document.getElementById(prefix+'Wind').textContent=fmt(d.maxWindWindow)+' m/s';
-    document.getElementById(prefix+'Rain').textContent=fmt(d.rain48)+' mm';
-    document.getElementById(prefix+'PrevWind').textContent=fmt(d.prevDayWind)+' m/s';
-    document.getElementById(prefix+'Pressure').textContent=fmt(Math.abs(d.pressureDelta))+' hPa '+(d.pressureDelta>0.2?'↑':d.pressureDelta<-0.2?'↓':'→');
-    document.getElementById(prefix+'Direction').textContent=Math.round(d.directionChange)+'° · '+compass(d.dir17)+'→'+compass(d.dir19);
-    document.getElementById(prefix+'Temp').textContent=fmt(d.temperature)+' °C';
-
-    const notes=[];
-    if(d.rain48>=10) notes.push('godt regnsignal');
-    if(Math.abs(d.pressureDelta)>=5) notes.push('tydelig trykkbevegelse');
-    if(d.directionChange>=30) notes.push('vinddreining før fiskestart');
-    if(d.maxWindWindow>10) notes.push('men vinden gjør selve fisket vanskelig');
-    else if(d.maxWindWindow<=5) notes.push('og svært gode vindforhold for å fiske');
-    document.getElementById(prefix+'Note').textContent=
-      notes.length ? 'Kort fortalt: '+notes.join(', ')+'.' : 'Kort fortalt: et ganske blandet værbilde.';
-  }
-
-  async function fetchAndRenderForecast(){
-    if(!weather?.history){
-      forecastStatusEl.textContent='Venter på Frost-historikken …';
-      return;
-    }
-    forecastStatusEl.textContent='Henter MET Locationforecast …';
-    try{
-      const raw=await fetchLocationForecast();
-      const rows=parseForecast(raw);
-      if(!rows.length) throw new Error('Tom værmelding');
-
-      const todayKey=osloDateKey(new Date());
-      const tomorrowKey=shiftDateKey(todayKey,1);
-      const dayAfterKey=shiftDateKey(todayKey,2);
-
-      const tomorrow=buildForecastDay(rows,tomorrowKey);
-      const dayAfter=buildForecastDay(rows,dayAfterKey);
-
-      forecastData={tomorrow,dayAfter,fetchedAt:Date.now()};
-      renderForecastCard('tomorrow',tomorrow);
-      renderForecastCard('dayAfter',dayAfter);
-
-      const stamp=new Date().toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'});
-      forecastStatusEl.textContent='Oppdatert fra MET · '+stamp;
-    }catch(err){
-      forecastStatusEl.innerHTML='<span class="forecast-error">Kunne ikke hente/beregne fiskevarsel: '+String(err.message||err)+'</span>';
-    }
-  }
-
-  function renderWeather(w,cached=false){
-    document.getElementById('rainValue').textContent=fmt(w.rain48);
-    document.getElementById('windYesterdayValue').textContent=fmt(w.windYesterday);
-    document.getElementById('temperatureValue').textContent=fmt(w.temperature);
-
-    const absP=Math.abs(w.pressureDelta);
-    const arrow=w.pressureDelta>0.2?'↑':w.pressureDelta<-0.2?'↓':'→';
-    document.getElementById('pressureValue').textContent=fmt(absP)+' '+arrow;
-    document.getElementById('pressureSub').textContent=
-      w.pressureDelta>0.2?'hPa · stigning':
-      w.pressureDelta<-0.2?'hPa · fall':'hPa · stabilt';
-
-    document.getElementById('directionValue').textContent=Math.round(w.directionChange)+'°';
-    document.getElementById('directionSub').textContent=compass(w.dir2h)+' → '+compass(w.dirNow);
-
-    document.getElementById('moonValue').textContent=w.moon.icon+' '+Math.round(w.moon.illumination)+'%';
-    document.getElementById('moonSub').textContent=w.moon.name;
-    document.getElementById('seasonValue').textContent=w.season.label;
-
-    const stamp=new Date(w.fetchedAt).toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'});
-    statusEl.textContent=(cached?'Viser sist lagrede Frost-data · ':'Oppdatert fra Frost · ')+stamp;
-    calcBtn.disabled=false;
-  }
-
-  async function fetchWeather(){
-    refreshBtn.disabled=true;
-    statusEl.textContent='Henter observasjoner fra Frost …';
-    try{
-      weather=await loadFrostWeather();
-      localStorage.setItem(WEATHER_CACHE_KEY,JSON.stringify(weather));
-      renderWeather(weather,false);
-      calculate();
-      fetchAndRenderForecast();
-    }catch(err){
-      technicalStatus.textContent=String(err.message||err);
-      const cached=localStorage.getItem(WEATHER_CACHE_KEY);
-      if(cached){
-        try{
-          weather=JSON.parse(cached);
-          weather.moon=moonData();
-          weather.season=seasonData();
-          renderWeather(weather,true);
-          statusEl.textContent+=' · ny henting feilet';
-          calculate();
-        }catch(_){
-          statusEl.textContent='Kunne ikke hente Frost-data.';
-        }
-      }else{
-        statusEl.textContent='Kunne ikke hente Frost-data. Åpne Teknisk status for detaljer.';
-      }
-    }finally{
-      refreshBtn.disabled=false;
-    }
-  }
-
-  function addItem(list,text,good){
-    const li=document.createElement('li');
-    li.className=good?'good':'bad';
-    li.textContent=text;
-    list.appendChild(li);
-  }
-
-  function calculate(){
-    if(!weather)return;
-    const windS=Number(String(windStartEl.value).replace(',','.'));
-    if(!Number.isFinite(windS)||windS<0)return;
-
-    const pScore=pressureScore(weather.pressureDelta);
-    const dirScore=directionScore(weather.directionChange,weather.recentWindMax);
-    const biological=
-      rainScore(weather.rain48)+
-      windYesterdayScore(weather.windYesterday)+
-      temperatureScore(weather.temperature)+
-      pScore+dirScore;
-
-    const fishability=windStartScore(windS);
-    const context=weather.season.score+weather.moon.score;
-    const comboBonus=(weather.rain48>=10&&weather.windYesterday>=8)?5:0;
-    const total=Math.min(100,biological+fishability+context+comboBonus);
-
-    document.getElementById('scoreValue').textContent=total;
-
-    let badge='Svak dag',title='Forholdene er ikke spesielt lovende',
-        text='Få av signalene som ser gunstige ut i datasettet er til stede.';
-    if(total>=90){badge='Svært lovende';title='Dette ser ut som en toppdag';text='Sterkt biologisk signal samtidig som forholdene ved fiskestart er gode.'}
-    else if(total>=75){badge='Meget god dag';title='Mye ligger til rette';text='Flere sterke signaler er på plass, samtidig som forholdene er fiskbare.'}
-    else if(total>=60){badge='God dag';title='Absolutt verdt å fiske';text='Forholdene treffer flere av mønstrene som har gitt gode fangster.'}
-    else if(total>=40){badge='Middels';title='Blandet bilde';text='Noen forhold er gode, mens andre trekker ned.'}
-
-    document.getElementById('ratingBadge').textContent=badge;
-    document.getElementById('ratingTitle').textContent=title;
-    document.getElementById('ratingText').textContent=text;
-
-    document.getElementById('bioText').textContent=
-      biological>=60?'Sterkt signal. Forholdene før fisket peker samlet i en gunstig retning.':
-      biological>=43?'Brukbart biologisk signal, men ikke alle faktorene treffer like godt.':
-      'Det biologiske signalet er forholdsvis svakt i dagens data.';
-
-    document.getElementById('fishabilityText').textContent=
-      windS>=2&&windS<=5?'Svært god fiskbarhet. Moderat vind ved fiskestart.':
-      windS>5&&windS<=8?'Fortsatt greit fiskbart, men vinden begynner å merkes.':
-      windS>10?'Dårlig fiskbarhet. Så mye vind gjør effektivt fiske vanskelig.':
-      'Rolig og fiskbart, men helt stille forhold får ikke maksimal vurdering.';
-
-    const absP=Math.abs(weather.pressureDelta);
-    document.getElementById('pressureText').textContent=
-      absP>=10?'Markant trykkendring de siste fire døgnene. Dette har vært et interessant positivt signal i datasettet.':
-      absP>=5?'Moderat trykkendring de siste fire døgnene trekker forsiktig i positiv retning.':
-      'Lufttrykket har vært relativt stabilt de siste fire døgnene.';
-
-    document.getElementById('directionText').textContent=
-      weather.recentWindMax<1.5?'Vindretningen får liten betydning fordi vinden har vært svært svak.':
-      weather.directionChange>=60?'Stor vinddreining siste to timer ('+Math.round(weather.directionChange)+'°). Dette behandles som et lite, eksperimentelt positivt signal.':
-      weather.directionChange>=30?'Tydelig vinddreining siste to timer ('+Math.round(weather.directionChange)+'°). Det gir en liten eksperimentell bonus.':
-      weather.directionChange>=15?'Noe endring i vindretningen siste to timer ('+Math.round(weather.directionChange)+'°).':
-      'Vindretningen har vært ganske stabil de siste to timene.';
-
-    const pos=document.getElementById('positiveList');
-    const neg=document.getElementById('negativeList');
-    pos.innerHTML='';neg.innerHTML='';
-
-    if(weather.rain48>=20)addItem(pos,fmt(weather.rain48)+' mm nedbør siste 48 timer ser svært lovende ut.',true);
-    else if(weather.rain48>=10)addItem(pos,fmt(weather.rain48)+' mm nedbør siste 48 timer ligger i et interessant område.',true);
-    else if(weather.rain48>=2)addItem(pos,'Det har kommet noe nedbør de siste 48 timene.',true);
-    else addItem(neg,'Svært lite nedbør de siste 48 timene.',false);
-
-    if(weather.windYesterday>=10&&weather.windYesterday<=14)addItem(pos,'Høyeste vind i går var frisk og ligger i et interessant område.',true);
-    else if(weather.windYesterday>=6&&weather.windYesterday<10)addItem(pos,'Høyeste vind i går var moderat og ligger i et lovende område.',true);
-    else if(weather.windYesterday>14)addItem(pos,'Det var svært mye vind i går. Mulig positiv påvirkning, men dette er mer usikkert.',true);
-    else addItem(neg,'Det var lite vind i går.',false);
-
-    if(windS>=2&&windS<=5)addItem(pos,'Vind ved fiskestart på '+fmt(windS)+' m/s gir svært god fiskbarhet.',true);
-    else if(windS>5&&windS<=8)addItem(pos,'Vind ved fiskestart er fortsatt håndterbar.',true);
-    else if(windS>10)addItem(neg,'Vind ved fiskestart over 10 m/s gjør fisket vanskelig.',false);
-    else addItem(pos,'Rolige forhold ved fiskestart gjør fisket enkelt.',true);
-
-    if(weather.temperature<=12)addItem(pos,'Kjølig temperatur akkurat nå gir et lite positivt signal.',true);
-    else if(weather.temperature>15)addItem(neg,'Varmere luft har vært mindre tydelig forbundet med gode fangster.',false);
-
-    if(absP>=10)addItem(pos,'Markant lufttrykksendring de siste fire døgnene trekker opp.',true);
-    else if(absP>=5)addItem(pos,'Lufttrykket har beveget seg moderat de siste fire døgnene.',true);
-    else addItem(neg,'Lufttrykket har vært forholdsvis stabilt de siste fire døgnene.',false);
-
-    if(dirScore>=3)addItem(pos,'Vindretningen har dreid tydelig de siste to timene. Foreløpig behandles dette som et positivt signal.',true);
-    else if(dirScore===1)addItem(pos,'Det har vært en liten vinddreining de siste to timene.',true);
-
-    if(weather.season.score===10)addItem(pos,'August har vært den sterkeste delen av hovedsesongen.',true);
-    else if(weather.season.score===5)addItem(pos,'Vi er inne i hovedsesongen fra midten av juli.',true);
-    else addItem(neg,'Vi er utenfor den delen av sesongen der datagrunnlaget er best.',false);
-
-    if(weather.moon.score===5)addItem(pos,weather.moon.name+' gir en liten månebonus.',true);
-    if(comboBonus)addItem(pos,'Både regn siste 48 timer og vind i går peker i gunstig retning.',true);
-  }
-
-  refreshBtn.addEventListener('click',fetchWeather);
-  calcBtn.addEventListener('click',calculate);
-  windStartEl.addEventListener('input',calculate);
-
-  window.addEventListener('beforeinstallprompt',e=>{
-    e.preventDefault();deferredPrompt=e;installBtn.style.display='block';
-  });
-  installBtn.addEventListener('click',async()=>{
-    if(!deferredPrompt)return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt=null;installBtn.style.display='none';
-  });
-  window.addEventListener('appinstalled',()=>{installBtn.style.display='none'});
-
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
-  }
-
-  const cached=localStorage.getItem(WEATHER_CACHE_KEY);
-  if(cached){
-    try{
-      weather=JSON.parse(cached);
-      weather.moon=moonData();
-      weather.season=seasonData();
-      renderWeather(weather,true);
-      calculate();
-      fetchAndRenderForecast();
-    }catch(_){}
-  }
-
-  fetchWeather();
-})();
-</script>
+    load();
+  </script>
 </body>
 </html>
